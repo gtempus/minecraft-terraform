@@ -12,8 +12,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Print the payload
-        run: echo '${{ toJson(github.event.client_payload) }}' | jq .
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Execute Terraform based on payload
+        run: |
+          case "${{ github.event.client_payload.action }}" in
+            start)
+              terraform apply -auto-approve -var="game_state=running"
+              ;;
+            stop)
+              terraform apply -auto-approve -var="game_state=stopped"
+              ;;
+            status)
+              terraform output -json
+              ;;
+            *)
+              echo "Unknown action: ${{ github.event.client_payload.action }}"
+              exit 1
+              ;;
+          esac
+      # - name: Print the payload
+      #  run: echo '${{ toJson(github.event.client_payload) }}' | jq .
 
 
     # Add more steps as needed...
