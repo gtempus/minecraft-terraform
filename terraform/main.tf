@@ -11,7 +11,6 @@ output "minecraft_server_public_ip" {
 
 provider "aws" {
   region  = "us-east-2"  # You can change this to your desired AWS region
-  profile = "terraform"
   default_tags {
     tags = {
       Name = "minecraft-server"
