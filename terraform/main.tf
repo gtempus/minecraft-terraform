@@ -9,7 +9,6 @@ output "minecraft_server_public_ip" {
   description = "The public IP address of the minecraft server."
 }
 
-
 provider "aws" {
   region  = "us-east-2"  # You can change this to your desired AWS region
   profile = "terraform"
@@ -17,7 +16,7 @@ provider "aws" {
 
 resource "aws_instance" "minecraft-server" {
   count         = var.game_state == "running" ? 1 : 0
-  ami           = "ami-01936e31f56bdacde"  # Example: Amazon Linux 2 AMI. Make sure to use an appropriate AMI ID for your region and needs.
+  ami           = "ami-01936e31f56bdacde"  # Focal Fossa | 20.04 | LTS | amd64 | hvm:ebs-ssd
   instance_type = "t2.micro"
 
   tags = {
