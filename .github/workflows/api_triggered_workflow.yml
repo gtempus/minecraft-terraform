@@ -16,9 +16,11 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Initialize Terraform
+        working-directory: ./terraform
         run: terraform init
 
       - name: Execute Terraform based on payload
+        working-directory: ./terraform
         run: |
           case "${{ github.event.client_payload.action }}" in
             start)
