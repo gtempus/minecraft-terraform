@@ -27,10 +27,10 @@ jobs:
         run: |
           case "${{ github.event.client_payload.action }}" in
             start)
-              terraform apply -auto-approve -var="game_state=running"
+              terraform apply -auto-approve -var="game_state=running" -var="slack_token=${{ secrets.SLACK_BOT_OAUTH_TOKEN }}"
               ;;
             stop)
-              terraform apply -auto-approve -var="game_state=stopped"
+              terraform apply -auto-approve -var="game_state=stopped" -var="slack_token=${{ secrets.SLACK_BOT_OAUTH_TOKEN }}"
               ;;
             status)
               terraform output -json
