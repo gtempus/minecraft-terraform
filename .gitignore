@@ -10,3 +10,4 @@
 /.idea/vcs.xml
 /minecraft-terraform.iml
 /terraform/.terraform/terraform.tfstate
+/dist/
