@@ -11,3 +11,4 @@
 /minecraft-terraform.iml
 /terraform/.terraform/terraform.tfstate
 /dist/
+/.idea/
