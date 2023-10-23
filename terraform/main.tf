@@ -128,3 +128,82 @@ resource "aws_instance" "minecraft-server" {
   ami           = "ami-01936e31f56bdacde"  # Focal Fossa | 20.04 | LTS | amd64 | hvm:ebs-ssd
   instance_type = "t2.micro"
 }
+
+
+######################
+## Slack App Infra  ##
+######################
+
+variable "slack_token" {
+  description = "Slack Bot User OAuth Token"
+  type        = string
+}
+
+resource "aws_lambda_function" "minecraft_bot" {
+  function_name = "minecraftBot"
+  role          = aws_iam_role.lambda_role.arn
+  handler       = "minecraftBot.handler"  # <FileName without extension>.<Exported function name>
+  runtime       = "nodejs16.x"
+  filename      = "../dist/minecraftBot.zip"
+}
+
+resource "aws_iam_role" "lambda_role" {
+  name = "lambda_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_apigatewayv2_api" "minecraft_bot_api" {
+  name          = "minecraftBotApi"
+  protocol_type = "HTTP"
+  target        = aws_lambda_function.minecraft_bot.arn
+}
+
+resource "aws_lambda_permission" "api_gateway" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.minecraft_bot.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  // Source ARN for the permission. In this case, allow any path on the API Gateway
+  source_arn = "${aws_apigatewayv2_api.minecraft_bot_api.execution_arn}/*/*"
+}
+
+resource "aws_cloudwatch_log_group" "minecraft_bot_lambda_log_group" {
+  name = "/aws/lambda/minecraft-bot-lambda-function"
+}
+
+resource "aws_iam_policy" "minecraft_bot_lambda_logging" {
+  name        = "MinecraftBotLambdaLogging"
+  description = "IAM policy for logging from Minecraft Bot Lambda"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Resource = "arn:aws:logs:*:*:*",
+        Effect   = "Allow"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  policy_arn = aws_iam_policy.minecraft_bot_lambda_logging.arn
+  role       = aws_iam_role.lambda_role.name
+}
