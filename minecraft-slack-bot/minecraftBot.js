@@ -29,7 +29,7 @@ exports.handler = async (event) => {
     const data = JSON.stringify({
         "event_type": "custom_event",
         "client_payload": {
-            "action": "start"
+            "action": "stop"
         }
     });
     const config = {
