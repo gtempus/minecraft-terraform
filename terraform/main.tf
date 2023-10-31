@@ -162,7 +162,7 @@ resource "aws_lambda_function" "minecraft_bot" {
   handler          = "minecraftBot.handler"  # <FileName without extension>.<Exported function name>
   runtime          = "nodejs16.x"
   filename         = "../dist/minecraftBot.zip"
-  source_code_hash = filebase64sha256("minecraftBot.zip")  # Detect changes to the source
+  source_code_hash = filebase64sha256("../dist/minecraftBot.zip")  # Detect changes to the source
 }
 
 resource "aws_iam_role" "lambda_role" {
