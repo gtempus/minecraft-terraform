@@ -157,11 +157,12 @@ resource "aws_secretsmanager_secret_version" "github_token_secret_version" {
 }
 
 resource "aws_lambda_function" "minecraft_bot" {
-  function_name = "minecraftBot"
-  role          = aws_iam_role.lambda_role.arn
-  handler       = "minecraftBot.handler"  # <FileName without extension>.<Exported function name>
-  runtime       = "nodejs16.x"
-  filename      = "../dist/minecraftBot.zip"
+  function_name    = "minecraftBot"
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "minecraftBot.handler"  # <FileName without extension>.<Exported function name>
+  runtime          = "nodejs16.x"
+  filename         = "../dist/minecraftBot.zip"
+  source_code_hash = filebase64sha256("minecraftBot.zip")  # Detect changes to the source
 }
 
 resource "aws_iam_role" "lambda_role" {
