@@ -18,7 +18,7 @@ jobs:
       - name: Zip Lambda function
         run: |
           mkdir dist
-          zip ./dist/minecraftBot.zip ./minecraft-slack-bot/minecraftBot.js
+          (cd minecraft-slack-bot && zip -r ../dist/minecraftBot.zip .)
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
