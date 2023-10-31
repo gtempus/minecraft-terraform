@@ -15,6 +15,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Zip Lambda function
+        run: |
+          mkdir dist
+          zip ./dist/minecraftBot.zip ./minecraft-slack-bot/minecraftBot.js
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
