@@ -1,0 +1,19 @@
+{
+  "name": "minecraft-slack-bot",
+  "version": "1.0.0",
+  "description": "slack interface for our minecraft server",
+  "main": "minecraftBot.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "minecraft-terraform"
+  },
+  "author": "gtempus",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1484.0",
+    "axios": "^1.6.0"
+  }
+}

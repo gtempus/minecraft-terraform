@@ -12,3 +12,4 @@
 /terraform/.terraform/terraform.tfstate
 /dist/
 /.idea/
+/minecraft-slack-bot/node_modules/
