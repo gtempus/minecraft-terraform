@@ -25,7 +25,7 @@ exports.handler = async (event) => {
     const githubToken = JSON.parse(secretData.SecretString).GITHUB_TOKEN;
 
     // Define the GitHub API endpoint URL
-    const githubApiUrl = 'https://api.github.com/repos/gtempus/minecraft-terraform/actions/workflows/WORKFLOW_NAME.yml/dispatches';
+    const githubApiUrl = 'https://api.github.com/repos/gtempus/minecraft-terraform/dispatches';
     const data = JSON.stringify({
         "event_type": "custom_event",
         "client_payload": {
