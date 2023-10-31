@@ -137,6 +137,23 @@ resource "aws_instance" "minecraft-server" {
 variable "slack_token" {
   description = "Slack Bot User OAuth Token"
   type        = string
+  sensitive   = true
+}
+
+variable "github_token" {
+  description = "The GitHub token for Secrets Manager"
+  type        = string
+  sensitive   = true  # This ensures Terraform doesn't print the value in outputs
+}
+
+resource "aws_secretsmanager_secret" "github_token_secret" {
+  name = "github_token"
+  description = "Secret for GitHub Token"
+}
+
+resource "aws_secretsmanager_secret_version" "github_token_secret_version" {
+  secret_id     = aws_secretsmanager_secret.github_token_secret.id
+  secret_string = "{\"GITHUB_TOKEN\":\"${var.github_token}\"}"
 }
 
 resource "aws_lambda_function" "minecraft_bot" {
@@ -207,3 +224,9 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
   policy_arn = aws_iam_policy.minecraft_bot_lambda_logging.arn
   role       = aws_iam_role.lambda_role.name
 }
+
+resource "aws_iam_role_policy_attachment" "secrets_manager_access" {
+  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+  role       = aws_iam_role.lambda_role.name
+}
+
