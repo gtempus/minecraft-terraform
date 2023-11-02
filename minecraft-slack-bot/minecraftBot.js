@@ -53,8 +53,7 @@ exports.handler = async (event) => {
     //     body: JSON.stringify(response.data),
     // };
 
-    const text = parsedBody.get('text') || '';
-    const responseMessage = `You said: ${text}`;
+    const responseMessage = `You said: ${parsedBody.toString()}`;
 
     // Send a message back to Slack
     return {
