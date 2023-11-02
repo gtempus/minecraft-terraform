@@ -16,8 +16,8 @@ exports.handler = async (event) => {
     }
 
     // Parse the message from Slack
-    const body = parse(event.body);
-    console.log("Parsed body:", body);
+    const decodedData = Buffer.from(event.body, 'base64').toString('utf-8');
+    console.log("Parsed body:", decodedData);
 
     // kick off the github action
     // Retrieve GitHub Token from AWS Secrets Manager
