@@ -18,7 +18,6 @@ exports.handler = async (event) => {
     // Parse the message from Slack
     const decodedData = Buffer.from(event.body, 'base64').toString('utf-8');
     const parsedBody = parse(decodedData);
-    console.log("Parsed body:", parse(parsedBody));
 
     // kick off the github action
     // Retrieve GitHub Token from AWS Secrets Manager
@@ -54,7 +53,7 @@ exports.handler = async (event) => {
     //     body: JSON.stringify(response.data),
     // };
 
-    const text = parsedBody || '';
+    const text = parsedBody.get('text') || '';
     const responseMessage = `You said: ${text}`;
 
     // Send a message back to Slack
