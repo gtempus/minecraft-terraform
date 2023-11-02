@@ -24,18 +24,12 @@ exports.handler = async (event) => {
     const secretData = await secretsManager.getSecretValue({ SecretId: 'github_token' }).promise();
     const githubToken = JSON.parse(secretData.SecretString).GITHUB_TOKEN;
 
-    const commandMapping = {
-        start: 'running',
-        stop: 'stopped',
-        'status': 'status',
-    }
-
     // Define the GitHub API endpoint URL
     const githubApiUrl = 'https://api.github.com/repos/gtempus/minecraft-terraform/dispatches';
     const data = JSON.stringify({
         "event_type": "custom_event",
         "client_payload": {
-            "action": commandMapping[parsedBody.text]
+            "action": parsedBody.text
         }
     });
     const config = {
