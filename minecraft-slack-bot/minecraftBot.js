@@ -1,4 +1,4 @@
-const { parse } = require('querystring');
+const { parse } = require('node:querystring');
 const AWS = require('aws-sdk');
 const axios = require('axios');
 
@@ -17,7 +17,8 @@ exports.handler = async (event) => {
 
     // Parse the message from Slack
     const decodedData = Buffer.from(event.body, 'base64').toString('utf-8');
-    console.log("Parsed body:", decodedData);
+    const parsedBody = parse(decodedData);
+    console.log("Parsed body:", parse(parsedBody);
 
     // kick off the github action
     // Retrieve GitHub Token from AWS Secrets Manager
@@ -53,7 +54,7 @@ exports.handler = async (event) => {
     //     body: JSON.stringify(response.data),
     // };
 
-    const text = body.text || '';
+    const text = parsedBody || '';
     const responseMessage = `You said: ${text}`;
 
     // Send a message back to Slack
