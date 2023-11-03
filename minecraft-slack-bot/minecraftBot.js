@@ -62,7 +62,7 @@ exports.handler = async (event) => {
   const minecraftServerCommand = generateMinecraftServerCommand(command, text);
 
   // send command to GitHub Action
-  const githubResponse = invokeGithubAction(minecraftServerCommand);
+  const githubResponse = await invokeGithubAction(minecraftServerCommand);
 
   // Send a message back to Slack
   return {
