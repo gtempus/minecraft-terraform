@@ -40,8 +40,8 @@ async function invokeGithubAction(minecraftServerCommand) {
   };
   // Make an HTTP POST request to trigger the GitHub Action
   const response =  await axios.request(config);
-  console.log(`GitHub Action Response: ${{response}}`);
-  return response;
+  console.log(`GitHub Action Response: ${response.status} ${response.data}`);
+  return response.data;
 }
 
 exports.handler = async (event) => {
