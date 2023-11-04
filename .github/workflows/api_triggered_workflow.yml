@@ -64,16 +64,3 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
-      - name: Generate Ansible Inventory
-        working-directory: ./terraform
-        run: |
-          terraform output -json minecraft_server_public_ip | sed '1d' > output.json
-          cat output.json
-          jq -r '.[]' output.json
-
-      - name: Run Ansible Playbook
-        working-directory: ./ansible
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ansible
-          ansible-playbook -i inventory playbook.yml
