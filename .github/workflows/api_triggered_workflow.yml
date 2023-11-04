@@ -67,10 +67,8 @@ jobs:
       - name: Generate Ansible Inventory
         working-directory: ./terraform
         run: |
-          echo "[minecraft_servers]" > ../ansible/inventory
-          terraform output -json | jq -r '.minecraft_server_public_ip.value[]' | while read ip; do
-            echo "minecraft_server ansible_host=${ip} ansible_user=ubuntu" >> ../ansible/inventory
-          done
+          chmod +x ../scripts/generate_inventory.sh
+          ../scripts/generate_inventory.sh
           cat ../ansible/inventory
 
       - name: Run Ansible Playbook
