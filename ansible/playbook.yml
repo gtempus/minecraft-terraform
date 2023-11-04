@@ -1,0 +1,6 @@
+- hosts: all
+  gather_facts: false
+  connection: community.aws.aws_ssm
+  tasks:
+    - name: Execute a command
+      command: echo "Hello, World!"
