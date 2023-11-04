@@ -57,5 +57,18 @@ jobs:
       # - name: Print the payload
       #  run: echo '${{ toJson(github.event.client_payload) }}' | jq .
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
 
-    # Add more steps as needed...
+      - name: Run Ansible Playbook
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible
+          ansible-playbook -i inventory playbook.yml
+
+
+
