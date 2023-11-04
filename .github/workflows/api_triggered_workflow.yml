@@ -68,7 +68,7 @@ jobs:
         working-directory: ./terraform
         run: |
           terraform output -json | sed '1d' > output.json
-          cat output.json | jq empty
+          cat output.json
           jq -r '.minecraft_server_public_ip.value[]' output.json
 
       - name: Run Ansible Playbook
