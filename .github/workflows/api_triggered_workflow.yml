@@ -68,7 +68,7 @@ jobs:
         working-directory: ./ansible
         run: |
           echo "[minecraft_servers]" > inventory
-          terraform output -json minecraft_server_public_ip | jq -r '.[]' | while read ip; do
+          terraform output -json minecraft_server_public_ip | jq -r '.value[]' | while read ip; do
             echo "minecraft_server ansible_host=${ip} ansible_user=ubuntu" >> inventory
           done
           cat ./inventory
