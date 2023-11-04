@@ -69,7 +69,7 @@ jobs:
         run: |
           terraform output -json > output.json
           cat output.json
-          jq -r '.minecraft_server_public_ip.value[]' output.json
+          /usr/bin/jq -r '.minecraft_server_public_ip.value[]' output.json
 
       - name: Run Ansible Playbook
         working-directory: ./ansible
