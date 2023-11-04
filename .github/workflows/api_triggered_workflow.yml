@@ -64,12 +64,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+      - name: Generate Ansible Inventory
+        working-directory: ./ansible
+        run: |
+          echo "[minecraft_servers]" > inventory
+          terraform output -json minecraft_server_public_ip | jq -r '.[]' | while read ip; do
+            echo "minecraft_server ansible_host=${ip} ansible_user=ubuntu" >> inventory
+          done
+          cat ./inventory
+
       - name: Run Ansible Playbook
         working-directory: ./ansible
         run: |
           sudo apt-get update
           sudo apt-get install -y ansible
-          ansible-playbook playbook.yml
-
-
-
+          ansible-playbook -i inventory playbook.yml
