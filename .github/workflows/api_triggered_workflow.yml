@@ -64,20 +64,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+      - name: Get server IP
+        id: server
+        run: echo "ip=$(terraform output -json minecraft_server_public_ip)" >> $GITHUB_OUTPUT
+
       - name: Generate Ansible Inventory
         working-directory: ./terraform
-        run: |
-          # Capture the output into a file
-          terraform output -json minecraft_server_public_ip | sed '1d' | sed '2d' > temp_output.json
-  
-          echo "the raw output..."
-          # Optionally, inspect the raw output file
-          cat temp_output.json
-
-          echo "using jq"
-          # Process the file with jq
-          IP=$(jq -r '.[0]' temp_output.json)
-          echo $IP > output.json
-
-          # Display the final IP
-          cat output.json
+        run: echo ${{ steps.vars.server.ip}}
