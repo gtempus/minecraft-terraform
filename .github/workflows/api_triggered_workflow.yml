@@ -69,10 +69,12 @@ jobs:
         run: |
           # Capture the output into a file
           terraform output -json minecraft_server_public_ip > temp_output.json
-
+  
+          echo "the raw output..."
           # Optionally, inspect the raw output file
           cat temp_output.json
 
+          echo "using jq"
           # Process the file with jq
           IP=$(jq -r '.[0]' temp_output.json)
           echo $IP > output.json
