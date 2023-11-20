@@ -64,3 +64,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+      - name: Generate Ansible Inventory
+        working-directory: ./terraform
+        run: |
+          terraform output -raw minecraft_server_public_ip > output.json
+          cat output.json
