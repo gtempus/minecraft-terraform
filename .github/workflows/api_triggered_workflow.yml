@@ -66,5 +66,5 @@ jobs:
 
       - name: Generate Ansible Inventory
         working-directory: ./terraform
-        run: terraform output -raw minecraft_server_public_ip
+        run: terraform output minecraft_server_public_ip
 
