@@ -68,7 +68,14 @@ jobs:
         working-directory: ./terraform
         id: server
         run: |
-          IP=$(terraform output -json minecraft_server_public_ip | jq -r '.[0]')
+          echo "Fetching Terraform output..."
+          TERRAFORM_OUTPUT=$(terraform output -json minecraft_server_public_ip)
+          echo "Terraform output: $TERRAFORM_OUTPUT"
+
+          echo "Extracting IP..."
+          IP=$(echo $TERRAFORM_OUTPUT | jq -r '.[0]')
+          echo "Extracted IP: $IP"
+
           echo "ip=${IP}" >> $GITHUB_ENV
 
       - name: Generate Ansible Inventory
