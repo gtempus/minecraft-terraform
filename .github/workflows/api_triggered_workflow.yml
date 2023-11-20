@@ -68,7 +68,7 @@ jobs:
         working-directory: ./terraform
         run: |
           # Capture the output into a file
-          terraform output -json minecraft_server_public_ip > temp_output.json
+          terraform output -json minecraft_server_public_ip | sed '1d' > temp_output.json
   
           echo "the raw output..."
           # Optionally, inspect the raw output file
