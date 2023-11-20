@@ -90,6 +90,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install boto3
 
+      - name: Find Python Path
+        id: python-path
+        run: |
+          echo "PYTHON_PATH=$(which python3)" >> $GITHUB_ENV
+          echo "Determined Python Path: $PYTHON_PATH"
+
       - name: Setup Ansible
         run: |
           # Install Ansible (example for Ubuntu runners)
@@ -103,7 +109,7 @@ jobs:
           mkdir -p ./inventory
           # Create the inventory file with the server IP
           echo "[minecraft_server]" > ./inventory/minecraft
-          echo "${{ env.ip }}" >> ./inventory/minecraft
+          echo "${{ env.ip }} ansible_python_interpreter=${{ env.PYTHON_PATH }}" >> ./ansible/inventory/minecraft
 
       - name: Run Ansible Playbook
         working-directory: ./ansible
