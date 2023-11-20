@@ -2,7 +2,7 @@ name: API Triggered Workflow
 
 on:
   repository_dispatch:
-    types: [custom_event]
+    types: [ custom_event ]
 
 jobs:
   build:
@@ -80,6 +80,23 @@ jobs:
 
           echo "ip=${IP}" >> $GITHUB_ENV
 
-      - name: Generate Ansible Inventory
-        working-directory: ./terraform
-        run: echo ${{ steps.server.output.ip}}
+      - name: Setup Ansible
+        run: |
+          # Install Ansible (example for Ubuntu runners)
+          sudo apt-get update
+          sudo apt-get install -y ansible
+
+      - name: Create Ansible Inventory
+        working-directory: ./ansible
+        run: |
+          # Create a directory for the inventory if it doesn't exist
+          mkdir -p ./inventory
+          # Create the inventory file with the server IP
+          echo "[minecraft_server]" > ./inventory/minecraft
+          echo "${{ env.ip }}" >> ./inventory/minecraft
+
+      - name: Run Ansible Playbook
+        working-directory: ./ansible
+        run: |
+          # Run your Ansible playbook using the inventory file
+          ansible-playbook -i ./inventory/minecraft playbook.yml
