@@ -67,9 +67,15 @@ jobs:
       - name: Generate Ansible Inventory
         working-directory: ./terraform
         run: |
-          echo "Printing raw Terraform output:"
-          terraform output -json minecraft_server_public_ip
-          echo "Extracting IP..."
-          IP=$(terraform output -json minecraft_server_public_ip | jq -r '.minecraft_server_public_ip.value[0]')
+          # Capture the output into a file
+          terraform output -json minecraft_server_public_ip > temp_output.json
+
+          # Optionally, inspect the raw output file
+          cat temp_output.json
+
+          # Process the file with jq
+          IP=$(jq -r '.[0]' temp_output.json)
           echo $IP > output.json
+
+          # Display the final IP
           cat output.json
