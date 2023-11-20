@@ -85,6 +85,9 @@ jobs:
           # Install Ansible (example for Ubuntu runners)
           sudo apt-get update
           sudo apt-get install -y ansible
+          
+          # Install boto3 for AWS support in Ansible
+          sudo pip install boto3
 
       - name: Create Ansible Inventory
         working-directory: ./ansible
