@@ -65,9 +65,10 @@ jobs:
           aws-region: us-east-2
 
       - name: Get server IP
+        working-directory: ./terraform
         id: server
         run: echo "ip=$(terraform output -json minecraft_server_public_ip)" >> $GITHUB_OUTPUT
 
       - name: Generate Ansible Inventory
         working-directory: ./terraform
-        run: echo ${{ steps.vars.server.ip}}
+        run: echo ${{ steps.server.output.ip}}
