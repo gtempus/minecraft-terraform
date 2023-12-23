@@ -102,3 +102,4 @@ jobs:
           options: |
             --inventory ./inventory/minecraft
             --verbose
+            -vvv
