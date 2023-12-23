@@ -91,9 +91,9 @@ jobs:
         uses: dawidd6/action-ansible-playbook@v2
         with:
           # Required, playbook filepath
-          playbook: ./playbook.yml
+          playbook: playbook.yml
           # Optional, directory where playbooks live
-          directory: .
+          directory: ./ansible
           # Optional, additional flags to pass to ansible-playbook
           options: |
             --inventory ./inventory/minecraft
