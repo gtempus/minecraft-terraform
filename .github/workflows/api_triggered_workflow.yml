@@ -87,6 +87,10 @@ jobs:
           echo "[minecraft_server]" > ./inventory/minecraft
           echo "${{ env.ip }} ansible_python_interpreter=${{ env.PYTHON_PATH }}" >> ./inventory/minecraft
 
+      - name: Install jmespath
+        run: |
+          sudo pipx inject ansible-core boto3
+
       - name: Run playbook
         uses: dawidd6/action-ansible-playbook@v2
         with:
