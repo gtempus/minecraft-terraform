@@ -3,4 +3,4 @@
   connection: community.aws.aws_ssm
   tasks:
     - name: Execute a command
-      command: echo "Hello, World!"
+      command: ls -ltra
