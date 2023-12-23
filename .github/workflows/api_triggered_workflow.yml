@@ -88,12 +88,13 @@ jobs:
           echo "${{ env.ip }} ansible_python_interpreter=${{ env.PYTHON_PATH }}" >> ./inventory/minecraft
 
       - name: Run playbook
+        working-directory: ./ansible
         uses: dawidd6/action-ansible-playbook@v2
         with:
           # Required, playbook filepath
-          playbook: ./ansible/playbook.yml
+          playbook: ./playbook.yml
           # Optional, directory where playbooks live
-          directory: ./ansible
+          directory: .
           # Optional, additional flags to pass to ansible-playbook
           options: |
             --inventory ./inventory/minecraft
