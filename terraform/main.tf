@@ -128,6 +128,12 @@ resource "aws_instance" "minecraft-server" {
   ami           = "ami-01936e31f56bdacde"  # Focal Fossa | 20.04 | LTS | amd64 | hvm:ebs-ssd
   instance_type = "t2.micro"
   iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
+
+  user_data = <<-EOF
+              #!/bin/bash
+              yum install -y amazon-ssm-agent
+              systemctl start amazon-ssm-agent
+              EOF
 }
 
 resource "aws_iam_role" "ssm_role" {
