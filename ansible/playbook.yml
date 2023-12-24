@@ -5,6 +5,7 @@
     ansible_connection: aws_ssm
     ansible_aws_ssm_bucket_name: gtempus-minecraft-server-ansible
     ansible_aws_ssm_region: us-east-2
+    ansible_aws_ssm_instance_id: i-05e19f7c7d0613cb9
   tasks:
     - name: aws-cli
       raw: yum install -y awscli
