@@ -1,4 +1,4 @@
-- name: install aws-cli
+- name: simple task
   hosts: all
   gather_facts: false
   vars:
@@ -7,6 +7,6 @@
     ansible_aws_ssm_region: us-east-2
     ansible_aws_ssm_instance_id: i-030c66541aab831f5
   tasks:
-    - name: aws-cli
-      raw: yum install -y awscli
-      tags: aws-cli
+    - name: hello
+      raw: echo "Hello, world!"
+      tags: helo
