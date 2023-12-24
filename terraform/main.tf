@@ -1,3 +1,8 @@
+variable "vpc_id" {
+  description = "The ID of the AWS VPC"
+  type        = string
+}
+
 variable "game_state" {
   description = "Determines if the game is running or not. Values: running, stopped."
   type        = string
