@@ -40,6 +40,8 @@ jobs:
 
       - name: Execute Terraform based on payload
         working-directory: ./terraform
+        env:
+          TF_VAR_vpc_id: ${{ secrets.AWS_VPC_ID }}
         run: |
           case "${{ github.event.client_payload.action }}" in
             start)

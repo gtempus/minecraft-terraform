@@ -133,6 +133,7 @@ resource "aws_instance" "minecraft-server" {
   ami           = "ami-01936e31f56bdacde"  # Focal Fossa | 20.04 | LTS | amd64 | hvm:ebs-ssd
   instance_type = "t2.micro"
   iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
+  vpc_security_group_ids = [aws_security_group.allow_https_outbound.id]
 
   user_data = <<-EOF
               #!/bin/bash
@@ -341,3 +342,21 @@ resource "aws_iam_role_policy_attachment" "ec2_instance_connect_attach" {
   role       = aws_iam_role.ssm_role.name
   policy_arn = aws_iam_policy.ec2_instance_connect_policy.arn
 }
+
+resource "aws_security_group" "allow_https_outbound" {
+  name        = "allow_https_outbound"
+  description = "Security group to allow outbound HTTPS traffic"
+  vpc_id      = var.vpc_id
+
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow_https_outbound"
+  }
+}
+
