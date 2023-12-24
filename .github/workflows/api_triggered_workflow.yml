@@ -118,5 +118,6 @@ jobs:
           # Optional, additional flags to pass to ansible-playbook
           options: |
             --inventory ./inventory/minecraft
+            --extra-vars "ansible_aws_ssm_instance_id=${{ env.instance_id }}"
             --verbose
             -vvvvvv
