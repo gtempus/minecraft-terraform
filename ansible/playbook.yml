@@ -1,6 +1,7 @@
 - hosts: all
   gather_facts: false
   connection: community.aws.aws_ssm
+  bucket_name: gtempus_minecraft
   tasks:
     - name: Execute a command
       command: ls -ltra
