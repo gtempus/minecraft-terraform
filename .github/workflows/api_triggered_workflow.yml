@@ -78,6 +78,21 @@ jobs:
 
           echo "ip=${IP}" >> $GITHUB_ENV
 
+      - name: Get server instance ID
+        working-directory: ./terraform
+        id: server-instance-id
+        run: |
+          echo "Fetching Terraform output..."
+          TERRAFORM_OUTPUT=$(terraform output -json minecraft_server_instance_ids)
+          echo "Terraform output: $TERRAFORM_OUTPUT"
+
+          echo "Extracting Instance ID..."
+          INSTANCE_ID=$(echo $TERRAFORM_OUTPUT | jq -r '.[0]')
+          echo "Extracted Instance ID: $INSTANCE_ID"
+
+          echo "instance_id=${INSTANCE_ID}" >> $GITHUB_ENV
+
+
       - name: Create Ansible Inventory
         working-directory: ./ansible
         run: |

@@ -9,6 +9,11 @@ output "minecraft_server_public_ip" {
   description = "The public IP address of the minecraft server."
 }
 
+output "minecraft_server_instance_ids" {
+  value = [for i in aws_instance.minecraft-server : i.id]
+  description = "The instance ID(s) of the Minecraft server."
+}
+
 provider "aws" {
   region  = "us-east-2"  # You can change this to your desired AWS region
   default_tags {
