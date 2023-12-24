@@ -7,6 +7,9 @@
     ansible_aws_ssm_region: us-east-2
     ansible_aws_ssm_instance_id: instance-id
   tasks:
+    - name: wait for connection
+      wait_for_connection: true
+
     - name: hello
       raw: echo "Hello, world!"
       tags: helo
