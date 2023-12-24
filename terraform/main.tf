@@ -136,8 +136,17 @@ resource "aws_instance" "minecraft-server" {
 
   user_data = <<-EOF
               #!/bin/bash
-              yum install -y amazon-ssm-agent
-              systemctl start amazon-ssm-agent
+              # Update package index
+              sudo apt-get update
+
+              # Install the SSM Agent
+              sudo snap install amazon-ssm-agent --classic
+
+              # Enable the SSM Agent to start on boot
+              sudo systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service
+
+              # Start the SSM Agent service
+              sudo systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
               EOF
 }
 
