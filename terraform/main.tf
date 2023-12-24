@@ -312,3 +312,59 @@ resource "aws_iam_role_policy_attachment" "s3_read_policy_attachment" {
   role       = aws_iam_role.ssm_role.name
   policy_arn = aws_iam_policy.s3_read_policy.arn
 }
+
+###################
+# Instance Connect
+###################
+resource "aws_iam_role" "ec2_instance_connect_role" {
+  name = "ec2_instance_connect_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_core" {
+  role       = aws_iam_role.ec2_instance_connect_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "ec2_instance_connect_profile" {
+  name = "ec2_instance_connect_profile"
+  role = aws_iam_role.ec2_instance_connect_role.name
+}
+
+resource "aws_iam_policy" "ec2_instance_connect_policy" {
+  name        = "ec2_instance_connect_policy"
+  description = "Policy to allow EC2 Instance Connect"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "ec2-instance-connect:SendSSHPublicKey",
+        Resource = "arn:aws:ec2:us-east-2:*:instance/*",
+        Condition = {
+          StringEquals = {
+            "ec2:osuser" = "ubuntu"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ec2_instance_connect_attach" {
+  role       = aws_iam_role.ssm_role.name
+  policy_arn = aws_iam_policy.ec2_instance_connect_policy.arn
+}
