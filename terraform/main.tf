@@ -136,7 +136,7 @@ terraform {
 resource "aws_instance" "minecraft-server" {
   count         = var.game_state == "running" ? 1 : 0
   ami           = "ami-01936e31f56bdacde"  # Focal Fossa | 20.04 | LTS | amd64 | hvm:ebs-ssd
-  instance_type = "t2.micro"
+  instance_type = "t2.medium"
   availability_zone = "us-east-2a"
   iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
   vpc_security_group_ids = [
