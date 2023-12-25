@@ -139,7 +139,7 @@ resource "aws_instance" "minecraft-server" {
   instance_type = "t2.micro"
   availability_zone = "us-east-2a"
   iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
-  vpc_security_group_ids = [aws_security_group.allow_https_outbound.id]
+  vpc_security_group_ids = [aws_security_group.allow_http_https_outbound.id]
 
   user_data = <<-EOF
               #!/bin/bash
@@ -349,11 +349,12 @@ resource "aws_iam_role_policy_attachment" "ec2_instance_connect_attach" {
   policy_arn = aws_iam_policy.ec2_instance_connect_policy.arn
 }
 
-resource "aws_security_group" "allow_https_outbound" {
-  name        = "allow_https_outbound"
-  description = "Security group to allow outbound HTTPS traffic"
+resource "aws_security_group" "allow_http_https_outbound" {
+  name        = "allow_http_https_outbound"
+  description = "Security group to allow outbound HTTP and HTTPS traffic"
   vpc_id      = var.vpc_id
 
+  # Allow outbound HTTPS (port 443)
   egress {
     from_port   = 443
     to_port     = 443
@@ -361,8 +362,16 @@ resource "aws_security_group" "allow_https_outbound" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Allow outbound HTTP (port 80)
+  egress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = {
-    Name = "allow_https_outbound"
+    Name = "allow_http_https_outbound"
   }
 }
 
