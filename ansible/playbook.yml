@@ -10,7 +10,7 @@
   tasks:
     - name: Wait 60 seconds for target connection to become reachable/usable
       wait_for_connection:
-        timeout: 60
+        timeout: 120
 
     - name: Check existing filesystem on EBS Volume
       command: lsblk -f "{{ device_name }}"
