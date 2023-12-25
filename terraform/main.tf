@@ -139,7 +139,10 @@ resource "aws_instance" "minecraft-server" {
   instance_type = "t2.micro"
   availability_zone = "us-east-2a"
   iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
-  vpc_security_group_ids = [aws_security_group.allow_http_https_outbound.id]
+  vpc_security_group_ids = [
+    aws_security_group.allow_http_https_outbound.id,
+    aws_security_group.allow_minecraft_clients_inbound.id
+  ]
 
   user_data = <<-EOF
               #!/bin/bash
