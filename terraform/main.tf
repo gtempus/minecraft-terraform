@@ -137,6 +137,7 @@ resource "aws_instance" "minecraft-server" {
   count         = var.game_state == "running" ? 1 : 0
   ami           = "ami-01936e31f56bdacde"  # Focal Fossa | 20.04 | LTS | amd64 | hvm:ebs-ssd
   instance_type = "t2.micro"
+  availability_zone = "us-east-2a"
   iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
   vpc_security_group_ids = [aws_security_group.allow_https_outbound.id]
 
@@ -363,5 +364,26 @@ resource "aws_security_group" "allow_https_outbound" {
   tags = {
     Name = "allow_https_outbound"
   }
+}
+
+###############################################
+# minecraft server volume for game persistence
+###############################################
+
+resource "aws_ebs_volume" "minecraft_server_ebs_volume" {
+  availability_zone = "us-east-2a"  # Change to the AZ where your instance is located
+  size              = 2             # Size in GiB
+  type              = "gp2"         # General Purpose SSD (gp2)
+
+  tags = {
+    Name = "MinecraftServerVolume"
+  }
+}
+
+resource "aws_volume_attachment" "ebs_attachment" {
+  device_name = "/dev/sdf" # The device name
+  volume_id   = aws_ebs_volume.minecraft_server_ebs_volume.id
+  instance_id = aws_instance.minecraft-server[0].id
+  delete_on_termination = false
 }
 
