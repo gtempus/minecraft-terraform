@@ -7,7 +7,7 @@
     ansible_aws_ssm_region: us-east-2
     ansible_aws_ssm_instance_id: instance-id
   tasks:
-    - name: Wait 600 seconds for target connection to become reachable/usable
+    - name: Wait 60 seconds for target connection to become reachable/usable
       wait_for_connection:
         timeout: 60
 
