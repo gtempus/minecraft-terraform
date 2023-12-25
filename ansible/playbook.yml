@@ -13,6 +13,14 @@
       wait_for_connection:
         timeout: 60
 
+    - name: List block devices
+      ansible.builtin.command: lsblk
+      register: lsblk_output
+
+    - name: Show lsblk output
+      ansible.builtin.debug:
+        msg: "{{ lsblk_output.stdout }}"
+
     - name: Check if EBS Volume exists at given device name
       command: ls {{ device_name }}
       register: volume_check
