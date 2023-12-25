@@ -33,11 +33,13 @@
       when: volume_check.rc != 0
 
     - name: Create mount point
+      become: true
       file:
         path: "{{ mount_point }}"
         state: directory
 
     - name: Mount EBS Volume
+      become: true
       mount:
         path: "{{ mount_point }}"
         src: "{{ device_name }}"
