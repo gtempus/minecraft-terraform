@@ -8,6 +8,10 @@
     ansible_aws_ssm_instance_id: instance-id
     device_name: /dev/xvdf
     mount_point: /mnt/ebs_volume
+    s3_minecraft_file: 'bedrock-server-1.20.51.01.zip'
+    local_path: '/tmp/bedrock-server.zip'
+    minecraft_server_directory: '/opt/minecraft'
+    extraction_path: "{{ minecraft_server_directory }}"
   tasks:
     - name: Wait 60 seconds for target connection to become reachable/usable
       wait_for_connection:
@@ -47,3 +51,29 @@
         fstype: ext4
         state: mounted
         opts: defaults,nofail
+
+    - name: Create Minecraft server directory
+      become: true
+      ansible.builtin.file:
+        path: "{{ minecraft_server_directory }}"
+        state: directory
+
+    - name: Install unzip package (Debian/Ubuntu)
+      become: true
+      ansible.builtin.apt:
+        name: unzip
+        state: present
+
+    - name: Download file from S3
+      ansible.builtin.aws_s3:
+        bucket: "{{  ansible_aws_ssm_bucket_name }}"
+        object: "/{{ s3_minecraft_file }}"
+        dest: "{{ local_path }}"
+        mode: get
+
+    - name: Unzip the file
+      become: true
+      ansible.builtin.unarchive:
+        src: "{{ local_path }}"
+        dest: "{{ extraction_path }}"
+        remote_src: yes
