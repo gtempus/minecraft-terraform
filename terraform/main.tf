@@ -383,8 +383,6 @@ resource "aws_ebs_volume" "minecraft_server_ebs_volume" {
 resource "aws_volume_attachment" "ebs_attachment" {
   device_name = "/dev/sdf" # device name
   volume_id   = aws_ebs_volume.minecraft_server_ebs_volume.id
-  instance_id = aws_instance.minecraft-server[0].id
+  instance_id = length(aws_instance.minecraft-server) > 0 ? aws_instance.minecraft-server[0].id : ""
   skip_destroy = true  # Ensures the volume is not detached on Terraform destroy
 }
-
-
