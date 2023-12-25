@@ -11,7 +11,7 @@
   tasks:
     - name: Wait 60 seconds for target connection to become reachable/usable
       wait_for_connection:
-        timeout: 120
+      timeout: 60
 
     - name: Check existing filesystem on EBS Volume
       command: lsblk -f "{{ device_name }}"
@@ -22,11 +22,16 @@
       debug:
         msg: "{{ lsblk_f_output.stdout }}"
 
-    - name: Create filesystem on EBS Volume
+    - name: Determine if filesystem exists
+      set_fact:
+        filesystem_exists: "{{ 'ext4' in lsblk_f_output.stdout }}"
+
+    - name: Create filesystem on EBS Volume if not exists
       become: true
       filesystem:
         fstype: ext4
         dev: "{{ device_name }}"
+      when: not filesystem_exists
 
     - name: Create mount point
       become: true
