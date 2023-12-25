@@ -375,6 +375,24 @@ resource "aws_security_group" "allow_http_https_outbound" {
   }
 }
 
+resource "aws_security_group" "allow_minecraft_clients_inbound" {
+  name        = "allow_minecraft_clients_inbound"
+  description = "Security group to allow inbound game traffic from clients"
+  vpc_id      = var.vpc_id
+
+  # Allow inbound UDP minecraft traffic
+  ingress {
+    from_port   = 19132
+    to_port     = 19132
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow_minecraft_clients_inbound"
+  }
+}
+
 ###############################################
 # minecraft server volume for game persistence
 ###############################################
