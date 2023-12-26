@@ -109,12 +109,20 @@
         mode: '0755'
 
     - name: Download systemd file from S3
-      become: true
       ansible.builtin.aws_s3:
         bucket: "{{  ansible_aws_ssm_bucket_name }}"
         object: "/{{ s3_minecraft_systemd_file }}"
-        dest: '/etc/systemd/system/minecraft.service'
+        dest: '/tmp/minecraft.service'
         mode: get
+
+    - name: Copy minecraft.service from /tmp to /etc/systemd/system/
+      become: true
+      ansible.builtin.copy:
+        src: /tmp/minecraft.service
+        dest: /etc/systemd/system/minecraft.service
+        owner: root
+        group: root
+        mode: '0644'
 
     - name: Reload systemd to recognize the new service
       become: true
