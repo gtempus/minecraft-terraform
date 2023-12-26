@@ -67,6 +67,6 @@ exports.handler = async (event) => {
   // Send a message back to Slack
   return {
     statusCode: 200,
-    body: "🫡 I'll get right on it! Once the server is up and running, I'll post the ip to #gamers_lair...",
+    body: "🫡 I'll get right on it! It takes ~5 minutes.\nOnce the server is up and running, I'll post the ip to #gamers_lair...",
   };
 };
