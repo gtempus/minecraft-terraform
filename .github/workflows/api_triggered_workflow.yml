@@ -120,3 +120,9 @@ jobs:
             --inventory ./inventory/minecraft
             --extra-vars "ansible_aws_ssm_instance_id=${{ env.instance_id }}"
             --verbose
+
+      - name: Send server status to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Minecraft server status coming soon!"}' $SLACK_WEBHOOK_URL
