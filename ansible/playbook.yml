@@ -123,6 +123,7 @@
         owner: root
         group: root
         mode: '0644'
+        remote_src: yes
 
     - name: Reload systemd to recognize the new service
       become: true
