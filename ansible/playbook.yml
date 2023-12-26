@@ -102,7 +102,7 @@
     - name: Set ownership and permissions for bedrock_server
       become: true
       ansible.builtin.file:
-        path: /opt/ebs_volume/minecraft/bedrock_server
+        path: "{{ minecraft_server_directory }}/bedrock_server"
         owner: minecraft
         group: minecraft
         mode: '0755'
