@@ -12,6 +12,7 @@
     local_path: '/tmp/bedrock-server.zip'
     minecraft_server_directory: "{{ mount_point }}/minecraft"
     extraction_path: "{{ minecraft_server_directory }}"
+    s3_minecraft_systemd_file: 'minecraft.service'
   tasks:
     - name: Wait 60 seconds for target connection to become reachable/usable
       wait_for_connection:
@@ -90,3 +91,47 @@
         src: "{{ local_path }}"
         dest: "{{ extraction_path }}"
         remote_src: yes
+
+    - name: Create a dedicated user for Minecraft
+      become: true
+      ansible.builtin.user:
+        name: minecraft
+        system: yes
+        create_home: yes
+
+    - name: Set ownership and permissions for bedrock_server
+      become: true
+      ansible.builtin.file:
+        path: /opt/ebs_volume/minecraft/bedrock_server
+        owner: minecraft
+        group: minecraft
+        mode: '0755'
+
+    - name: Download systemd file from S3
+      ansible.builtin.aws_s3:
+        bucket: "{{  ansible_aws_ssm_bucket_name }}"
+        object: "/{{ s3_minecraft_systemd_file }}"
+        dest: '/etc/systemd/system/minecraft.service'
+        mode: get
+
+    - name: Reload systemd to recognize the new service
+      become: true
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: Enable and start the Minecraft service
+      become: true
+      ansible.builtin.systemd:
+        name: minecraft
+        enabled: yes
+        state: started
+
+    - name: Check status of Minecraft service
+      become: true
+      ansible.builtin.command: systemctl status minecraft.service
+      register: service_status
+      ignore_errors: true
+
+    - name: Show Minecraft service status
+      ansible.builtin.debug:
+        var: service_status.stdout_lines
