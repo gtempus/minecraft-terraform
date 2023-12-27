@@ -12,6 +12,12 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     steps:
+      - name: Acknowledge command from Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"🎮 Someone issued the Minecraft command: `${{ github.event.client_payload.action }}`\nI will get right on it!"}' $SLACK_WEBHOOK_URL
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -126,4 +132,4 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Minecraft server ip: `${{ env.ip }}`"}' $SLACK_WEBHOOK_URL
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"⛏️Minecraft server ip: `${{ env.ip }}`"}' $SLACK_WEBHOOK_URL
