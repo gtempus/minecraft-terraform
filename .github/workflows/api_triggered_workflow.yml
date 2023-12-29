@@ -5,12 +5,8 @@ on:
     types: [ custom_event ]
 
 jobs:
-  build:
+  receive_cmd:
     runs-on: ubuntu-latest
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
     steps:
       - name: Acknowledge command from Slack
         env:
@@ -18,6 +14,14 @@ jobs:
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text":"🎮 Someone issued the Minecraft command: `${{ github.event.client_payload.action }}`\nI will get right on it!"}' $SLACK_WEBHOOK_URL
 
+  build:
+    needs: receive_cmd
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
