@@ -25,13 +25,13 @@ jobs:
         run: |
           case "${{ github.event.client_payload.action }}" in
             start)
-              echo "::set-output name=command::running"
+              echo "command=running" >> $GITHUB_OUTPUT
               ;;
             stop)
-              echo "::set-output name=command::stopped"
+              echo "command=stopped" >> $GITHUB_OUTPUT
               ;;
             status)
-              echo "::set-output name=command::status"
+              echo "command=status" >> $GITHUB_OUTPUT
               ;;
             *)
               echo "Unknown action: ${{ github.event.client_payload.action }}"
