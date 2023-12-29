@@ -17,18 +17,21 @@ jobs:
   interpret_cmd:
     needs: receive_cmd
     runs-on: ubuntu-latest
+    outputs:
+      command: ${{ steps.set_command.outputs.command }}
     steps:
       - name: Interpret payload command
+        id: set_command
         run: |
           case "${{ github.event.client_payload.action }}" in
             start)
-              echo "command=running" >> $GITHUB_ENV
+              echo "::set-output name=command::running"
               ;;
             stop)
-              echo "command=stopped" >> $GITHUB_ENV
+              echo "::set-output name=command::stopped"
               ;;
             status)
-              echo "command=status" >> $GITHUB_ENV
+              echo "::set-output name=command::status"
               ;;
             *)
               echo "Unknown action: ${{ github.event.client_payload.action }}"
@@ -75,7 +78,7 @@ jobs:
         env:
           TF_VAR_vpc_id: ${{ secrets.AWS_VPC_ID }}
         run: |
-          case "${{ env.command }}" in
+          case "${{ needs.interpret_cmd.outputs.command }}" in
             running)
               terraform apply -auto-approve -var="game_state=running" -var="slack_token=${{ secrets.SLACK_BOT_OAUTH_TOKEN }}" -var="github_token=${{ secrets.GH_ACTIONS_TOKEN }}"
               ;;
@@ -86,7 +89,7 @@ jobs:
               terraform output -json
               ;;
             *)
-              echo "Unknown action: ${{ env.command }}"
+              echo "Unknown action: ${{ needs.interpret_cmd.outputs.command }}"
               exit 1
               ;;
           esac
