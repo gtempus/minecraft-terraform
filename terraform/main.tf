@@ -1,3 +1,9 @@
+variable "instance_type" {
+  description = "Server size"
+  type        = string
+  default     = "t2.micro"  # t2.small, t2.medium
+}
+
 variable "vpc_id" {
   description = "The ID of the AWS VPC"
   type        = string
@@ -136,7 +142,7 @@ terraform {
 resource "aws_instance" "minecraft-server" {
   count         = var.game_state == "running" ? 1 : 0
   ami           = "ami-01936e31f56bdacde"  # Focal Fossa | 20.04 | LTS | amd64 | hvm:ebs-ssd
-  instance_type = "t2.medium"
+  instance_type = var.instance_type
   availability_zone = "us-east-2a"
   iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
   vpc_security_group_ids = [
