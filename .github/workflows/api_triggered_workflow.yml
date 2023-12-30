@@ -80,10 +80,43 @@ jobs:
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text":"⛏️ Minecraft server ip: `${{ env.ip }}`"}' $SLACK_WEBHOOK_URL
 
-  build:
+  stop_server:
     needs: interpret_cmd
     runs-on: ubuntu-latest
-    if: needs.interpret_cmd.outputs.command == 'running' || needs.interpret_cmd.outputs.command == 'stopped'
+    if: needs.interpret_cmd.outputs.command == 'stopped'
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
+
+      - name: Initialize Terraform
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Execute Terraform based on command
+        working-directory: ./terraform
+        env:
+          TF_VAR_vpc_id: ${{ secrets.AWS_VPC_ID }}
+        run: terraform apply -auto-approve -var="game_state=stopped" -var="slack_token=${{ secrets.SLACK_BOT_OAUTH_TOKEN }}" -var="github_token=${{ secrets.GH_ACTIONS_TOKEN }}"
+
+      - name: Send server status to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"🛑 The minecraft server has been stopped 🛑"}' $SLACK_WEBHOOK_URL
+
+  start_server:
+    needs: interpret_cmd
+    runs-on: ubuntu-latest
+    if: needs.interpret_cmd.outputs.command == 'running'
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -119,7 +152,7 @@ jobs:
         working-directory: ./terraform
         env:
           TF_VAR_vpc_id: ${{ secrets.AWS_VPC_ID }}
-        run: terraform apply -auto-approve -var="game_state=${{ needs.interpret_cmd.outputs.command }}" -var="slack_token=${{ secrets.SLACK_BOT_OAUTH_TOKEN }}" -var="github_token=${{ secrets.GH_ACTIONS_TOKEN }}"
+        run: terraform apply -auto-approve -var="game_state=running" -var="slack_token=${{ secrets.SLACK_BOT_OAUTH_TOKEN }}" -var="github_token=${{ secrets.GH_ACTIONS_TOKEN }}"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -171,7 +204,6 @@ jobs:
           sudo pipx inject ansible-core boto3
 
       - name: Run playbook
-        continue-on-error: true
         uses: dawidd6/action-ansible-playbook@v2
         with:
           # Required, playbook filepath
@@ -188,4 +220,4 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"⛏️Minecraft server ip: `${{ env.ip }}`"}' $SLACK_WEBHOOK_URL
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"⛏️ Minecraft server ip: `${{ env.ip }}`"}' $SLACK_WEBHOOK_URL
