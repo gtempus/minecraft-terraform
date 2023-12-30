@@ -215,13 +215,12 @@ resource "aws_secretsmanager_secret_version" "github_token_secret_version" {
 }
 
 resource "aws_lambda_function" "minecraft_bot" {
-  count            = var.game_state == "running" ? 1 : 0
   function_name    = "minecraftBot"
   role             = aws_iam_role.lambda_role.arn
   handler          = "minecraftBot.handler"  # <FileName without extension>.<Exported function name>
   runtime          = "nodejs16.x"
   filename         = "../dist/minecraftBot.zip"
-  source_code_hash = filebase64sha256("../dist/minecraftBot.zip")  # Detect changes to the source
+  source_code_hash = var.game_state == "running" ? filebase64sha256("../dist/minecraftBot.zip") : ""  # only update bot when 'running'
 }
 
 resource "aws_iam_role" "lambda_role" {
