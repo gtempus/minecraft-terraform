@@ -215,6 +215,7 @@ resource "aws_secretsmanager_secret_version" "github_token_secret_version" {
 }
 
 resource "aws_lambda_function" "minecraft_bot" {
+  count            = var.game_state == "running" ? 1 : 0
   function_name    = "minecraftBot"
   role             = aws_iam_role.lambda_role.arn
   handler          = "minecraftBot.handler"  # <FileName without extension>.<Exported function name>
