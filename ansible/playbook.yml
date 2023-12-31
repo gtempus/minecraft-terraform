@@ -20,7 +20,7 @@
 
     - name: Check if the minecraft systemd service is running and end play if it is
       meta: end_play
-      when: "'minecraft' in ansible_facts.services and ansible_facts.services['minecraft'].state == 'running'"
+      when: "'minecraft.service' in ansible_facts.services and ansible_facts.services['minecraft.service'].state == 'running'"
 
     - name: Wait 60 seconds for target connection to become reachable/usable
       wait_for_connection:
