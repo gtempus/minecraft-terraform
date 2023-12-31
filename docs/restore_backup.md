@@ -6,6 +6,7 @@ Here are steps to get a backed up worlds folder off of s3 and into the server.
 1. Verify `aws aws --version`
 1. Configure aws with `aws configure`.
     1. You don't need to add credential information since you're in a SSM session.
+    1. You will need to set the region `us-east-2`
 1. Stop the server: `sudo systemctl stop minecraft.service`
 1. Check the logs: `sudo journalctl -u minecraft.service`
 1. Download the desired backup file from s3.
