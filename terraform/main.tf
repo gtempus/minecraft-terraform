@@ -312,7 +312,7 @@ resource "aws_iam_policy" "s3_read_write_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Action   = ["s3:GetObject", "s3:ListBucket", "s3:PutObject", "s3:PutObjectAcl"],
+        Action   = ["s3:GetObject", "s3:ListBucket", "s3:PutObject", "s3:PutObjectAcl", "s3:GetObjectTagging", "s3:PutObjectTagging"],
         Effect   = "Allow",
         Resource = [
           aws_s3_bucket.gtempus_minecraft_server_ansible.arn,
