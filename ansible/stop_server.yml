@@ -1,6 +1,6 @@
 - name: simple task
   hosts: all
-  gather_facts: false
+  gather_facts: true
   vars:
     ansible_python_interpreter: "/usr/bin/python3"
     ansible_connection: aws_ssm
@@ -15,8 +15,25 @@
     extraction_path: "{{ minecraft_server_directory }}"
     s3_minecraft_systemd_file: 'minecraft.service'
   tasks:
+    - name: Set the filename with a timestamp
+      set_fact:
+        zipfile: "/tmp/worlds_backup_{{ ansible_date_time.iso8601_basic_short }}.zip"
+
     - name: Stop minecraft server service
       become: true
       ansible.builtin.service:
         name: "{{ s3_minecraft_systemd_file }}"
         state: stopped
+
+    - name: Archive the directory with timestamp
+      ansible.builtin.archive:
+        path: "{{ minecraft_server_directory }}/worlds"
+        dest: "{{ zipfile }}"
+        format: zip
+
+    - name: Upload zip file to S3
+      community.aws.aws_s3:
+        bucket: "{{  ansible_aws_ssm_bucket_name }}"
+        object: "/backups/{{ zipfile | basename }}"
+        src: "{{ zipfile }}"
+        mode: put
