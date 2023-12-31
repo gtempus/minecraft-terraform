@@ -16,6 +16,7 @@
     s3_minecraft_systemd_file: 'minecraft.service'
   tasks:
     - name: Stop minecraft server service
+      become: true
       ansible.builtin.service:
         name: "{{ s3_minecraft_systemd_file }}"
         state: stopped
