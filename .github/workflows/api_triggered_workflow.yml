@@ -101,6 +101,53 @@ jobs:
         working-directory: ./terraform
         run: terraform init
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Get server instance ID
+        working-directory: ./terraform
+        id: server-instance-id
+        run: |
+          echo "Fetching Terraform output..."
+          TERRAFORM_OUTPUT=$(terraform output -json minecraft_server_instance_ids)
+          echo "Terraform output: $TERRAFORM_OUTPUT"
+
+          echo "Extracting Instance ID..."
+          INSTANCE_ID=$(echo $TERRAFORM_OUTPUT | jq -r '.[0]')
+          echo "Extracted Instance ID: $INSTANCE_ID"
+
+          echo "instance_id=${INSTANCE_ID}" >> $GITHUB_ENV
+
+      - name: Create Ansible Inventory
+        working-directory: ./ansible
+        run: |
+          # Create a directory for the inventory if it doesn't exist
+          mkdir -p ./inventory
+          # Create the inventory file with the server IP
+          echo "[minecraft_server]" > ./inventory/minecraft
+          echo "${{ env.ip }} ansible_python_interpreter=${{ env.PYTHON_PATH }}" >> ./inventory/minecraft
+
+      - name: Install boto3
+        run: |
+          sudo pipx inject ansible-core boto3
+
+      - name: Run stop_server playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          # Required, playbook filepath
+          playbook: stop_server.yml
+          # Optional, directory where playbooks live
+          directory: ./ansible
+          # Optional, additional flags to pass to ansible-playbook
+          options: |
+            --inventory ./inventory/minecraft
+            --extra-vars "ansible_aws_ssm_instance_id=${{ env.instance_id }}"
+            --verbose
+
       - name: Execute Terraform based on command
         working-directory: ./terraform
         env:
