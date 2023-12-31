@@ -31,6 +31,19 @@
         dest: "{{ zipfile }}"
         format: zip
 
+    - name: Install pip (Debian/Ubuntu)
+      become: true
+      ansible.builtin.apt:
+        name: python3-pip
+        state: present
+
+    - name: Install required Python libraries for AWS
+      ansible.builtin.pip:
+        name:
+          - boto3
+          - botocore
+        state: present
+
     - name: Upload zip file to S3
       community.aws.aws_s3:
         bucket: "{{  ansible_aws_ssm_bucket_name }}"
