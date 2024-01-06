@@ -57,11 +57,11 @@ jobs:
           terraform_wrapper: false
 
       - name: Initialize Terraform
-        working-directory: ./terraform
+        working-directory: ./terraform/game-server
         run: terraform init
 
       - name: Get server IP
-        working-directory: ./terraform
+        working-directory: ./terraform/game-server
         id: server
         run: |
           echo "Fetching Terraform output..."
@@ -98,7 +98,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Initialize Terraform
-        working-directory: ./terraform
+        working-directory: ./terraform/game-server
         run: terraform init
 
       - name: Configure AWS Credentials
@@ -109,7 +109,7 @@ jobs:
           aws-region: us-east-2
 
       - name: Get server instance ID
-        working-directory: ./terraform
+        working-directory: ./terraform/game-server
         id: server-instance-id
         run: |
           echo "Fetching Terraform output..."
@@ -149,7 +149,7 @@ jobs:
             --verbose
 
       - name: Execute Terraform based on command
-        working-directory: ./terraform
+        working-directory: ./terraform/game-server
         env:
           TF_VAR_vpc_id: ${{ secrets.AWS_VPC_ID }}
         run: terraform apply -auto-approve -var="game_state=stopped" -var="slack_token=${{ secrets.SLACK_BOT_OAUTH_TOKEN }}" -var="github_token=${{ secrets.GH_ACTIONS_TOKEN }}"
@@ -192,11 +192,11 @@ jobs:
           terraform_wrapper: false
 
       - name: Initialize Terraform
-        working-directory: ./terraform
+        working-directory: ./terraform/game-server
         run: terraform init
 
       - name: Execute Terraform based on command
-        working-directory: ./terraform
+        working-directory: ./terraform/game-server
         env:
           TF_VAR_vpc_id: ${{ secrets.AWS_VPC_ID }}
         run: terraform apply -auto-approve -var="game_state=running" -var="slack_token=${{ secrets.SLACK_BOT_OAUTH_TOKEN }}" -var="github_token=${{ secrets.GH_ACTIONS_TOKEN }}"
@@ -209,7 +209,7 @@ jobs:
           aws-region: us-east-2
 
       - name: Get server IP
-        working-directory: ./terraform
+        working-directory: ./terraform/game-server
         id: server
         run: |
           echo "Fetching Terraform output..."
@@ -223,7 +223,7 @@ jobs:
           echo "ip=${IP}" >> $GITHUB_ENV
 
       - name: Get server instance ID
-        working-directory: ./terraform
+        working-directory: ./terraform/game-server
         id: server-instance-id
         run: |
           echo "Fetching Terraform output..."
