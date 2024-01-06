@@ -225,8 +225,8 @@ resource "aws_lambda_function" "minecraft_bot" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "minecraftBot.handler"  # <FileName without extension>.<Exported function name>
   runtime          = "nodejs16.x"
-  filename         = "../dist/minecraftBot.zip"
-  source_code_hash = var.game_state == "running" ? filebase64sha256("../dist/minecraftBot.zip") : ""  # only update bot when 'running'
+  filename         = "../../dist/minecraftBot.zip"
+  source_code_hash = var.game_state == "running" ? filebase64sha256("../../dist/minecraftBot.zip") : ""  # only update bot when 'running'
 }
 
 resource "aws_iam_role" "lambda_role" {
