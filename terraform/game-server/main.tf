@@ -1,7 +1,7 @@
 variable "instance_type" {
   description = "Server size"
   type        = string
-  default     = "t2.medium"  # 1p = t2.micro, 2p = t2.small, 2+p = t2.medium
+  default     = "t2.small"  # 1p = t2.micro, 2p = t2.small, 2+p = t2.medium
 }
 
 variable "vpc_id" {
