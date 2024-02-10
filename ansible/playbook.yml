@@ -9,7 +9,7 @@
     ansible_aws_ssm_instance_id: instance-id
     device_name: /dev/xvdf
     mount_point: /mnt/ebs_volume
-    s3_minecraft_file: 'bedrock-server-1.20.51.01.zip'
+    s3_minecraft_file: 'bedrock-server-1.20.61.01.zip'
     local_path: '/tmp/bedrock-server.zip'
     minecraft_server_directory: "{{ mount_point }}/minecraft"
     extraction_path: "{{ minecraft_server_directory }}"
