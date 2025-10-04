@@ -141,7 +141,7 @@ terraform {
 
 resource "aws_instance" "minecraft-server" {
   count         = var.game_state == "running" ? 1 : 0
-  ami           = "ami-01936e31f56bdacde"  # Focal Fossa | 20.04 | LTS | amd64 | hvm:ebs-ssd
+  ami           = "ami-07f06ca5176c81f6c"  # Noble Numbat | 24.04 | LTS | amd64 | hvm:ebs-ssd-gp3  -  https://cloud-images.ubuntu.com/locator/ec2/
   instance_type = var.instance_type
   availability_zone = "us-east-2a"
   iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
